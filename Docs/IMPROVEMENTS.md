@@ -483,9 +483,8 @@ trial_count: 10
 | Phase 5.3 | done | `bb98a4d`（GitHub Actions CI：lint + import smoke + pytest） |
 | Phase 5.4 | done | `49b8088` 引入 `utils/get_logger`；2026-05-12 完成全包迁移：PRs #9-#14（Unit 22 tasker / Unit 23 pretrain / Unit 24 data+utils+prompt / Unit 25 evaluation / Unit 26 顶层脚本 + `--log-level`/`--quiet` CLI / Unit 27 Tutorial）。RESULT 行（` Final best ` / `Final Test:`）保留为 `print`。 |
 | Phase 5.5 | done | 2026-05-12 落地：PR #15（Unit 28 YAML config + `configs/{cora_gpf,mutag_allinone,pubmed_gprompt}.yaml` + `pyproject.toml` 加 `pyyaml`，CLI 覆盖 YAML 覆盖默认值）。 |
-| Phase 5.6 | partial | 2026-05-12 非破坏式版本落地：PR #16（Unit 29 `git rm Node.zip ProG_pipeline.jpg` + `.gitignore` 加入 + `Docs/README.md` 注释二进制资源迁移）。**破坏式 `git filter-repo` 历史改写仍 pending**（需全员重 clone，等团队协调窗口）。 |
 | Phase 6.1 | done | `e0d9d4c`（.gitignore 移除 /Docs，IMPROVEMENTS/baseline_metrics/README 入库） |
-| Phase 6.2-6.4 | **pending** | 文档拆分 + CLAUDE.md + 顶层 README 更新，建议等本批 PR 全部 land 后再做（避免文档过期）。 |
+| Phase 6.2-6.4 | done | 2026-05-12 落地：PR #19（拆分 `Docs/README.md` → `architecture.md` / `datasets.md` / `running.md`；新增 `CLAUDE.md`、`CONTRIBUTING.md`；顶层 `README.md` 移除"LinkTask"过时声明 + 加 Quickstart/Architecture 链接）。 |
 
 **附带的 pre-existing bug 修复**（由 Phase 5.2 smoke tests 暴露，commit `b590fd2`）：
 
@@ -730,9 +729,6 @@ trial_count: 10
    - 新增 `configs/` 目录，给 baseline.sh 的 3 组命令各写一份 yaml；
    - `bench.py` 增加 `--config` 参数，支持"yaml 覆盖 CLI 默认值，CLI 显式传入再覆盖 yaml"；
    - 旧 CLI 调用保持有效。
-6. **二进制资源迁移**（独立 PR）：
-   - 把 `Node.zip`、`ProG_pipeline.jpg`、`Logo.jpg` 迁出主仓库，放到 Release Assets 或 LFS；
-   - `git rm` 后用 `git filter-repo` 清理历史（**破坏式操作，需要全员同步重新 clone，提前一周通知**）。
 
 **Definition of Done**：
 - 新成员只需 `git clone && pip install -e .[dev,ogb] && bash scripts/baseline.sh` 就能跑起来；
