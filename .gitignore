@@ -11,6 +11,9 @@ __pycache__/
 Docs/
 CLAUDE.md
 .github/copilot-instructions.md
+.agents/*
+.claude/*
+skills-lock.json
 
 /Experiment
 /Utility
