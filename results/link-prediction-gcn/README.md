@@ -24,6 +24,16 @@ classified by the edge label (see
 `shot_num=0` is the full `RandomLinkSplit` baseline; `shot_num>0` is the
 k-positive few-shot setting.
 
+### Run configuration
+
+- Downstream epochs: 50
+- Folds per cell (`task_num`): 3 — every `mean±std` is taken over 3 independent
+  few-shot splits, so the reported std reflects real run-to-run variance.
+- Pretraining: 50 epochs per method.
+- `All-in-one` edge-induced-subgraph caps: `max_train_edges=128`, `num_hops=1`,
+  `max_nodes=24` (bounded so the edge-classification reformulation stays
+  tractable on the graph-level datasets).
+
 The final report contains **2912 independent `(dataset, shot, pretrain+prompt)`
 combinations** and **11648 metric values** over Accuracy, F1, AUROC, and AUPRC.
 
