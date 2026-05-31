@@ -1,11 +1,11 @@
-# ProG-V2: A Reproducible Graph Prompt Learning Benchmark
+# ProG-V2: A Reproducible Toolkit for Graph Prompt Learning
 
 <p align="center">
   <img src="assets/logo.jpg" height="120" alt="ProG logo" />
 </p>
 
 ProG-V2 is an engineering-focused extension of the original
-[ProG benchmark](https://github.com/sheldonresearch/ProG) for graph prompt
+**ProG** benchmark for graph prompt
 learning. It keeps the standard **pre-train → prompt-tune → evaluate** workflow,
 while adding a modular prompt-strategy architecture, broader prompt coverage,
 centralized path/device/logging utilities, benchmark scripts, tests, and public
