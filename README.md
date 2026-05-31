@@ -77,14 +77,6 @@ Result files:
 
 ### Edge Task (Link Prediction)
 
-The original ProG/All-in-one work also covers an **edge-level task**. In ProG-V2
-this is the `LinkTask` downstream task: candidate node pairs are scored, trained
-with binary labels, and evaluated mainly by **AUROC** and **AUPRC**. Most prompt
-strategies use a dot-product edge decoder; `All-in-one` follows its paper
-formulation and reformulates each candidate edge `(u, v)` into an edge-induced
-subgraph that is classified by the edge label (see
-[`prompt_graph/tasker/all_in_one_link_adapter.py`](./prompt_graph/tasker/all_in_one_link_adapter.py)).
-
 The link-prediction report lives under
 [`results/link-prediction-gcn/`](./results/link-prediction-gcn/) and contains
 **2912 `(dataset, shot, pretrain+prompt)` combinations** over Accuracy, F1,
@@ -96,7 +88,7 @@ AUROC, and AUPRC.
 | Datasets | CiteSeer, Cora, IMDB-BINARY, MUTAG, PROTEINS, PTC_MR, PubMed, Wisconsin (8) |
 | Shots | 0-shot, 1-shot, 3-shot, 5-shot |
 | Pretrains | None, DGI, GraphMAE, Edgepred_GPPT, Edgepred_Gprompt, GraphCL, SimGRACE (7) |
-| Prompts | 13 LinkTask-supported strategies (including `All-in-one`) |
+| Prompts | 13 LinkTask-supported strategies |
 | Combos per dataset | 91 (13 prompts × 7 pretrains) × 4 shots = 364 cells |
 | Primary metrics | AUROC, AUPRC (Accuracy/F1 kept for matrix compatibility) |
 
@@ -164,14 +156,6 @@ python bench.py \
 Run a LinkTask cell (link prediction, dot-product decoder):
 
 ```bash
-# shot_num=0 → RandomLinkSplit baseline; shot_num>0 → k-positive few-shot.
-# Datasets in NODE_TASKS use single-graph LP; GRAPH_TASKS use multi-graph LP
-# with per-graph negative sampling. See prompt_graph/defines.py::LINK_TASKS
-# for the curated dataset list and
-# prompt_graph/tasker/link_task.py::LINK_TASK_SUPPORTED_PROMPTS for the
-# 13 supported prompt strategies. All-in-one uses an edge-induced-graph
-# adapter; GPPT, MultiGprompt, Prodigy, and RELIEF are not yet adapted and
-# raise NotImplementedError at construction.
 python bench.py \
   --pretrain_task LinkTask \
   --dataset_name Cora \
@@ -199,31 +183,6 @@ python downstream_task.py \
   --pre_train_model_path None
 ```
 
-Recommended LinkTask experiment slices:
-
-| Experiment | Command |
-|---|---|
-| Main LP extension table | `bash scripts/bench_paper_grid.sh --task link --gnn_type GCN --shots "0 1 3 5"` |
-| Publishable subset | `bash scripts/bench_paper_grid.sh --task link --gnn_type GCN --shots "0 1 3 5" --datasets "Cora CiteSeer PubMed Computers Texas Wisconsin MUTAG PROTEINS IMDB-BINARY"` |
-| Edge-pretraining ablation | `bash scripts/bench_paper_grid.sh --task link --gnn_type GCN --shots "0" --prompts "None" --pretrains "None DGI GraphMAE Edgepred_GPPT Edgepred_Gprompt GraphCL SimGRACE"` |
-| Prompt-family ablation | `bash scripts/bench_paper_grid.sh --task link --gnn_type GCN --shots "0" --pretrains "None" --prompts "None All-in-one GPF GPF-plus EdgePrompt EdgePromptplus UniPrompt Gprompt SelfPro ProNoG PSP DAGPrompT GraphPrompter"` |
-
-For LinkTask, AUROC and AUPRC are the primary metrics. Accuracy and F1 are kept
-for matrix compatibility with the classification tasks.
-
-To export LinkTask matrices in the same shape as the public
-`final_matrices.xlsx` report:
-
-```bash
-python scripts/export_final_matrices.py \
-  --input-root Experiment/ExcelResults \
-  --output-root results/link-prediction-gcn \
-  --task Link \
-  --gnn_type GCN
-```
-
-For a tested tutorial entry point, see
-[`Tutorial/quickstart_progv2.py`](./Tutorial/quickstart_progv2.py).
 
 ## Supported Components
 
@@ -258,7 +217,7 @@ For a tested tutorial entry point, see
 |---|---|---|---|
 | `NodeTask` | `prompt_graph.tasker.NodeTask` | `NODE_TASKS` (12) | Node classification, supports all 17 prompts. |
 | `GraphTask` | `prompt_graph.tasker.GraphTask` | `GRAPH_TASKS` (11) | Graph classification, supports all 17 prompts. |
-| `LinkTask` | `prompt_graph.tasker.LinkTask` | `LINK_TASKS` (16 curated) | Link prediction with binary BCE + dot-product decoder for most prompts. `All-in-one` uses a separate edge-induced-graph adapter; `GPPT`, `MultiGprompt`, `Prodigy`, and `RELIEF` raise `NotImplementedError` until their LP adapters land. |
+| `LinkTask` | `prompt_graph.tasker.LinkTask` | `LINK_TASKS` (16 curated) | Link prediction with binary BCE + dot-product decoder for most prompts. |
 
 ## Scripts
 
@@ -276,8 +235,6 @@ Useful scripts:
 | `scripts/bootstrap_excel_full.py` | Create empty Excel matrices for a selected backbone. |
 | `scripts/pretrain_full_grid.sh` | Pretrain selected methods/datasets/backbone. |
 | `scripts/bench_full_grid.sh` | Run the full project benchmark grid with filters. |
-| `scripts/pretrain_paper_grid.sh` | Run the paper-scope pretraining grid. |
-| `scripts/bench_paper_grid.sh` | Run the paper-scope benchmark grid (Node/Graph classification and the LinkTask edge task). |
 | `scripts/merge_result_excels.py` | Merge per-run Excel outputs into one report. |
 | `scripts/export_final_matrices.py` | Export populated per-dataset matrices into `summary.csv` and `final_matrices.xlsx`. |
 
